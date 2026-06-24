@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Company Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, #dbeafe 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #bfdbfe 0%, transparent 25%),
+        linear-gradient(135deg, #eef4ff, #f8fbff, #eaf2ff);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .top-admin-btn a {
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-weight: 600;
+    }
+
+    .registration-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px 50px;
+    }
+
+    .registration-card {
+      width: 100%;
+      max-width: 1200px;
+      border: none;
+      border-radius: 30px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 25px 70px rgba(13, 110, 253, 0.16);
+    }
+
+    .left-panel {
+      background: linear-gradient(160deg, #0d6efd, #2563eb, #60a5fa);
+      color: white;
+      padding: 55px 40px;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: rgba(255,255,255,0.10);
+      border-radius: 50%;
+      top: -70px;
+      right: -70px;
+    }
+
+    .left-panel::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      bottom: -90px;
+      left: -90px;
+    }
+
+    .left-badge {
+      display: inline-block;
+      padding: 10px 18px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-panel h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-panel p {
+      font-size: 1rem;
+      line-height: 1.8;
+      opacity: 0.96;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-box {
+      margin-top: 35px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-box div {
+      margin-bottom: 14px;
+      padding: 12px 15px;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.14);
+      font-size: 0.96rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .right-panel {
+      padding: 45px 40px;
+      background: transparent;
+    }
+
+    .form-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #14213d;
+      margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+      color: #64748b;
+      margin-bottom: 28px;
+      font-size: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0d6efd;
+      margin-top: 24px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #dbeafe;
+      letter-spacing: 0.3px;
+    }
+
+    .form-label {
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 16px;
+      padding: 14px 16px;
+      border: 1px solid #dbe3ee;
+      box-shadow: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 0.18rem rgba(13, 110, 253, 0.15);
+    }
+
+    textarea.form-control {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .location-box {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .location-input {
+      flex: 1;
+      min-height: 60px;
+      font-size: 16px;
+      border-radius: 18px;
+      padding-left: 18px;
+    }
+
+    .btn-current {
+      min-width: 150px;
+      border-radius: 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #0d6efd, #2563eb);
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.25);
+      transition: all 0.3s ease;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.32);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 18px;
+      color: #64748b;
+      font-size: 0.96rem;
+    }
+
+    .login-link a {
+      text-decoration: none;
+      font-weight: 700;
+      color: #0d6efd;
+    }
+
+    /* Minimal safe Google autocomplete styling */
+    .pac-container {
+      z-index: 9999 !important;
+    }
+
+    @media (max-width: 768px) {
+      .left-panel {
+        display: none;
+      }
+
+      .right-panel {
+        padding: 28px 20px;
+      }
+
+      .form-title {
+        font-size: 1.8rem;
+      }
+
+      .location-box {
+        flex-direction: column;
+      }
+
+      .btn-current {
+        width: 100%;
+        min-height: 52px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="d-flex justify-content-end p-3 top-admin-btn">
+  <a th:href="@{/admin/login}" class="btn btn-outline-dark btn-sm">
+    Admin Login
+  </a>
+</div>
+
+<div class="registration-wrapper">
+  <div class="card registration-card">
+    <div class="row g-0">
+
+      <div class="col-md-5">
+        <div class="left-panel d-flex flex-column justify-content-center">
+          <div class="left-badge">Business Hiring Portal</div>
+          <h1>Register Your Company</h1>
+          <p>
+            Create your company account to post jobs, manage applications,
+            upload documents, complete verification, and hire trusted candidates.
+          </p>
+
+          <div class="feature-box">
+            <div>✔ Secure Company Registration</div>
+            <div>✔ Google Location Suggestions</div>
+            <div>✔ Modern Premium UI</div>
+            <div>✔ Faster and Trusted Hiring</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-7">
+        <div class="right-panel">
+
+          <h2 class="form-title">Company Registration</h2>
+          <p class="form-subtitle">Please complete all required company and verification details.</p>
+
+          <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+          <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+          <form th:action="@{/signup/company}" method="post" enctype="multipart/form-data">
+
+            <div class="section-title">Login Details</div>
+
+            <div class="mb-3">
+              <label class="form-label">Contact Person Name</label>
+              <input type="text" name="fullName" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Company Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" minlength="6" required>
+            </div>
+
+            <div class="section-title">Company Details</div>
+
+            <div class="mb-3">
+              <label class="form-label">Company Name</label>
+              <input type="text" name="companyName" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Website</label>
+              <input type="url" name="website" class="form-control" placeholder="https://example.com">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Location</label>
+              <div class="location-box">
+                <input
+                  type="text"
+                  id="companyLocation"
+                  name="location"
+                  class="form-control location-input"
+                  placeholder="Search city like Bangalore, Pune, Mumbai..."
+                  autocomplete="off"
+                  required
+                >
+               <!-- <button type="button" class="btn btn-outline-primary btn-current" onclick="getCurrentLocation()">
+                  Use Current
+                </button>-->
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">About Company</label>
+              <textarea name="about" class="form-control" placeholder="Write about your company..."></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Company Logo</label>
+              <input type="file" name="logoFile" class="form-control" accept=".jpg,.jpeg,.png">
+            </div>
+
+            <div class="section-title">Registration Payment</div>
+
+            <div class="mb-3">
+              <label class="form-label">Registration Fee</label>
+              <input type="text" class="form-control" value="₹499" readonly>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Payment Method</label>
+              <select name="paymentMethod" class="form-select" required>
+                <option value="">Select Payment Method</option>
+                <option value="UPI">UPI</option>
+                <option value="Card">Debit/Credit Card</option>
+                <option value="NetBanking">Net Banking</option>
+              </select>
+            </div>
+
+            <div class="section-title">Verification Details</div>
+
+            <div class="mb-3">
+              <label class="form-label">GST Number</label>
+              <input type="text" name="gstNumber" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Company Address</label>
+              <textarea name="address" class="form-control" required placeholder="Enter full company address"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Pincode</label>
+              <input type="text" name="pincode" class="form-control" pattern="[0-9]{6}" maxlength="6" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">GST File</label>
+              <input type="file" name="gstFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">PAN File</label>
+              <input type="file" name="panFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Incorporation File</label>
+              <input type="file" name="incorporationFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Address Proof File</label>
+              <input type="file" name="addressProofFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-register w-100">
+              Pay & Register Company
+            </button>
+
+            <div class="login-link">
+              Already have an account? <a th:href="@{/login}">Login here</a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let autocomplete;
+
+  function initAutocomplete() {
+    const input = document.getElementById("companyLocation");
+
+    if (!input) return;
+
+    if (!window.google || !google.maps || !google.maps.places) {
+      console.log("Google Places API not loaded.");
+      return;
+    }
+
+    autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ["(cities)"],
+      componentRestrictions: { country: "in" }
+    });
+
+    autocomplete.addListener("place_changed", function () {
+      const place = autocomplete.getPlace();
+
+      if (place && place.formatted_address) {
+        input.value = place.formatted_address;
+      } else if (place && place.name) {
+        input.value = place.name;
+      }
+    });
+  }
+
+  function getCurrentLocation() {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by this browser.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        if (!window.google || !google.maps) {
+          alert("Google Maps API not loaded.");
+          return;
+        }
+
+        const geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ location: { lat: lat, lng: lng } }, function(results, status) {
+          if (status === "OK" && results && results.length > 0) {
+            document.getElementById("companyLocation").value = results[0].formatted_address;
+          } else {
+            document.getElementById("companyLocation").value = lat + ", " + lng;
+          }
+        });
+      },
+      function() {
+        alert("Unable to fetch current location. Please allow location permission.");
+      }
+    );
+  }
+
+  window.addEventListener("load", function () {
+    setTimeout(initAutocomplete, 800);
+  });
+</script>
+
+<!-- Replace YOUR_API_KEY with your actual Google API key -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFiZImmpa9bS_9VEGoQ5Mfq2ZLHirlhiM
+&libraries=places"></script>
+
+</body>
+</html>s

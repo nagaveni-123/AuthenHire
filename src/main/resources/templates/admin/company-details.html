@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Company Details</title>
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            min-height:100vh;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            color:#fff;
+            position:relative;
+            overflow-x:hidden;
+        }
+
+        body::before,
+        body::after{
+            content:"";
+            position:absolute;
+            border-radius:50%;
+            filter:blur(120px);
+            z-index:0;
+        }
+
+        body::before{
+            width:300px;
+            height:300px;
+            background:rgba(59,130,246,0.28);
+            top:40px;
+            left:30px;
+        }
+
+        body::after{
+            width:320px;
+            height:320px;
+            background:rgba(236,72,153,0.20);
+            bottom:40px;
+            right:40px;
+        }
+
+        .container-box{
+            max-width:1200px;
+            margin:auto;
+            margin-top:40px;
+            margin-bottom:40px;
+            padding:0 15px;
+            position:relative;
+            z-index:2;
+        }
+
+        .back-btn{
+            border:none;
+            border-radius:14px;
+            padding:10px 18px;
+            font-weight:600;
+            margin-bottom:20px;
+            background:rgba(255,255,255,0.12);
+            color:#fff;
+            backdrop-filter:blur(12px);
+            box-shadow:0 8px 20px rgba(0,0,0,0.25);
+            transition:0.3s ease;
+        }
+
+        .back-btn:hover{
+            background:rgba(255,255,255,0.20);
+            color:#fff;
+            transform:translateY(-2px);
+        }
+
+        .page-card{
+            background:rgba(255,255,255,0.10);
+            backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
+            border:1px solid rgba(255,255,255,0.15);
+            padding:35px;
+            border-radius:24px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.30);
+            margin-bottom:35px;
+        }
+
+        .page-title{
+            font-size:32px;
+            font-weight:700;
+            margin-bottom:25px;
+            color:#ffffff;
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+
+        .page-title i{
+            color:#60a5fa;
+        }
+
+        .info-row{
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:20px;
+            padding:14px 0;
+            border-bottom:1px solid rgba(255,255,255,0.10);
+            flex-wrap:wrap;
+        }
+
+        .info-row:last-child{
+            border-bottom:none;
+        }
+
+        .label{
+            font-weight:600;
+            color:#cbd5e1;
+            min-width:160px;
+            font-size:15px;
+        }
+
+        .value{
+            color:#ffffff;
+            font-size:15px;
+            font-weight:500;
+            flex:1;
+            word-break:break-word;
+        }
+
+        .logo-box{
+            margin-top:20px;
+            padding:20px;
+            border-radius:18px;
+            background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.12);
+        }
+
+        .logo{
+            margin-top:10px;
+            max-height:90px;
+            max-width:220px;
+            border-radius:14px;
+            background:#fff;
+            padding:8px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.20);
+        }
+
+        .edit-btn{
+            margin-top:25px;
+            border:none;
+            border-radius:14px;
+            padding:12px 22px;
+            font-weight:600;
+            background:linear-gradient(90deg,#2563eb,#3b82f6,#60a5fa);
+            color:#fff;
+            box-shadow:0 10px 22px rgba(37,99,235,0.35);
+            transition:0.3s ease;
+        }
+
+        .edit-btn:hover{
+            color:#fff;
+            transform:translateY(-2px) scale(1.02);
+            box-shadow:0 14px 26px rgba(37,99,235,0.42);
+        }
+
+        .verification-title{
+            font-size:28px;
+            font-weight:700;
+            margin-bottom:20px;
+            color:#fff;
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .verification-title i{
+            color:#38bdf8;
+        }
+
+        .verification-card{
+            background:rgba(255,255,255,0.10);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,0.14);
+            border-radius:22px;
+            padding:25px;
+            box-shadow:0 12px 28px rgba(0,0,0,0.25);
+            transition:0.35s ease;
+        }
+
+        .verification-card:hover{
+            transform:translateY(-6px);
+            box-shadow:0 18px 36px rgba(0,0,0,0.32);
+        }
+
+        .section-text{
+            margin-bottom:14px;
+            color:#f8fafc;
+            font-size:15px;
+        }
+
+        .section-text b{
+            color:#cbd5e1;
+            margin-right:6px;
+        }
+
+        .badge-status,
+        .badge{
+            padding:8px 14px;
+            border-radius:30px;
+            font-size:13px;
+            font-weight:600;
+            letter-spacing:0.3px;
+        }
+
+        .bg-info{
+            background:linear-gradient(90deg,#06b6d4,#0ea5e9) !important;
+            color:#fff !important;
+        }
+
+        .bg-warning{
+            background:linear-gradient(90deg,#f59e0b,#fbbf24) !important;
+            color:#1f2937 !important;
+        }
+
+        .bg-success{
+            background:linear-gradient(90deg,#10b981,#22c55e) !important;
+            color:#fff !important;
+        }
+
+        .file-list{
+            list-style:none;
+            padding-left:0;
+            margin-top:12px;
+            margin-bottom:0;
+        }
+
+        .file-list li{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            gap:10px;
+            padding:14px 16px;
+            margin-bottom:10px;
+            border-radius:14px;
+            background:rgba(255,255,255,0.08);
+            border:1px solid rgba(255,255,255,0.10);
+        }
+
+        .file-label{
+            color:#e2e8f0;
+            font-weight:600;
+        }
+
+        .file-view-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:9px 16px;
+            background:linear-gradient(90deg,#2563eb,#3b82f6);
+            color:white;
+            text-decoration:none;
+            border-radius:12px;
+            font-size:13px;
+            font-weight:600;
+            transition:0.3s ease;
+            box-shadow:0 8px 18px rgba(37,99,235,0.30);
+        }
+
+        .file-view-btn:hover{
+            color:white;
+            text-decoration:none;
+            transform:translateY(-2px);
+            box-shadow:0 12px 22px rgba(37,99,235,0.38);
+        }
+
+        .alert{
+            border:none;
+            border-radius:16px;
+            background:rgba(255,255,255,0.14);
+            color:#fff;
+            backdrop-filter:blur(12px);
+            padding:18px 20px;
+        }
+
+        @media(max-width:768px){
+            .container-box{
+                margin-top:20px;
+                padding:0 12px;
+            }
+
+            .page-card,
+            .verification-card{
+                padding:22px;
+            }
+
+            .page-title{
+                font-size:24px;
+            }
+
+            .verification-title{
+                font-size:22px;
+            }
+
+            .info-row{
+                flex-direction:column;
+                gap:6px;
+            }
+
+            .label{
+                min-width:auto;
+            }
+
+            .file-list li{
+                flex-direction:column;
+                align-items:flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-box">
+
+    <a class="btn back-btn" th:href="@{/admin/companies}">
+        <i class="fa-solid fa-arrow-left me-2"></i> Back
+    </a>
+
+    <div class="page-card">
+
+        <h3 class="page-title">
+            <i class="fa-solid fa-building-shield"></i>
+            Company Details
+        </h3>
+
+        <div class="info-row">
+            <span class="label">Company ID</span>
+            <span class="value" th:text="${company.id}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Company Name</span>
+            <span class="value" th:text="${company.name}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Location</span>
+            <span class="value" th:text="${company.location}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Website</span>
+            <span class="value" th:text="${company.website}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">AI Status</span>
+            <span class="badge bg-info badge-status" th:text="${company.aiStatus}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Admin Status</span>
+            <span class="badge bg-warning badge-status" th:text="${company.adminStatus}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">Verification</span>
+            <span class="badge bg-success badge-status"
+                  th:text="${company.verified ? 'Verified' : 'Not Verified'}"></span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">About Company</span>
+            <span class="value" th:text="${company.about}"></span>
+        </div>
+
+        <div th:if="${company.logoUrl != null and !#strings.isEmpty(company.logoUrl)}" class="logo-box">
+            <span class="label d-block mb-2">Company Logo</span>
+            <img class="logo" th:src="${company.logoUrl}" alt="Company Logo">
+        </div>
+
+        <a class="btn edit-btn" th:href="@{/admin/companies/{id}/edit(id=${company.id})}">
+            <i class="fa-solid fa-pen-to-square me-2"></i> Edit / Update
+        </a>
+
+    </div>
+
+    <h4 class="verification-title">
+        <i class="fa-solid fa-file-shield"></i>
+        Verification Records
+    </h4>
+
+    <div th:if="${#lists.isEmpty(verifications)}" class="alert alert-secondary">
+        No verification uploaded for this company.
+    </div>
+
+    <div th:each="v : ${verifications}" class="card verification-card mb-4">
+
+        <p class="section-text">
+            <b>GST Number:</b>
+            <span th:text="${v.gstNumber}"></span>
+        </p>
+
+        <p class="section-text">
+            <b>Address:</b>
+            <span th:text="${v.address}"></span>
+        </p>
+
+        <p class="section-text">
+            <b>Pincode:</b>
+            <span th:text="${v.pincode}"></span>
+        </p>
+
+        <p class="section-text">
+            <b>AI Status:</b>
+            <span class="badge bg-info" th:text="${v.aiStatus}"></span>
+        </p>
+
+        <p class="section-text">
+            <b>Admin Status:</b>
+            <span class="badge bg-warning" th:text="${v.adminStatus}"></span>
+        </p>
+
+        <p class="section-text mb-2"><b>Uploaded Files:</b></p>
+
+        <ul class="file-list">
+            <li>
+                <span class="file-label">GST File</span>
+                <div>
+                    <a th:if="${v.gstFile != null and !#strings.isEmpty(v.gstFile)}"
+                       th:href="@{${v.gstFile}}"
+                       target="_blank"
+                       class="file-view-btn">
+                        <i class="fa-solid fa-eye"></i> View File
+                    </a>
+                    <span th:if="${v.gstFile == null or #strings.isEmpty(v.gstFile)}">Not Uploaded</span>
+                </div>
+            </li>
+
+            <li>
+                <span class="file-label">PAN File</span>
+                <div>
+                    <a th:if="${v.panFile != null and !#strings.isEmpty(v.panFile)}"
+                       th:href="@{${v.panFile}}"
+                       target="_blank"
+                       class="file-view-btn">
+                        <i class="fa-solid fa-eye"></i> View File
+                    </a>
+                    <span th:if="${v.panFile == null or #strings.isEmpty(v.panFile)}">Not Uploaded</span>
+                </div>
+            </li>
+
+            <li>
+                <span class="file-label">Incorporation File</span>
+                <div>
+                    <a th:if="${v.incorporationFile != null and !#strings.isEmpty(v.incorporationFile)}"
+                       th:href="@{${v.incorporationFile}}"
+                       target="_blank"
+                       class="file-view-btn">
+                        <i class="fa-solid fa-eye"></i> View File
+                    </a>
+                    <span th:if="${v.incorporationFile == null or #strings.isEmpty(v.incorporationFile)}">Not Uploaded</span>
+                </div>
+            </li>
+
+            <li>
+                <span class="file-label">Address Proof</span>
+                <div>
+                    <a th:if="${v.addressProofFile != null and !#strings.isEmpty(v.addressProofFile)}"
+                       th:href="@{${v.addressProofFile}}"
+                       target="_blank"
+                       class="file-view-btn">
+                        <i class="fa-solid fa-eye"></i> View File
+                    </a>
+                    <span th:if="${v.addressProofFile == null or #strings.isEmpty(v.addressProofFile)}">Not Uploaded</span>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+</div>
+
+</body>
+</html>

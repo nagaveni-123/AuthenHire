@@ -1,0 +1,129 @@
+/* ===== Global ===== */
+
+body{
+    font-family: 'Inter', sans-serif;
+    background:#f7f9fc;
+    color:#1f2937;
+}
+
+/* Smooth scroll */
+html{
+    scroll-behavior:smooth;
+}
+
+/* ===== Hero Section ===== */
+
+.hero{
+    background: linear-gradient(120deg,#4f46e5,#06b6d4);
+    color:white;
+    border-bottom-left-radius:60px;
+    border-bottom-right-radius:60px;
+    padding-bottom:80px;
+}
+
+.hero h1{
+    letter-spacing:-0.5px;
+}
+
+.hero p{
+    opacity:0.9;
+}
+
+/* Search Box */
+
+.hero .form-control{
+    border-radius:12px;
+    padding:12px;
+    border:none;
+    box-shadow:none;
+}
+
+.hero .form-control:focus{
+    box-shadow:none;
+    outline:none;
+}
+
+.hero .btn{
+    border-radius:12px;
+    font-weight:600;
+    padding:10px 20px;
+}
+
+/* ===== Cards ===== */
+
+.card{
+    border:none;
+    transition:all .25s ease;
+    border-radius:16px;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* ===== Job Card ===== */
+
+.job-card{
+    border-radius:18px;
+    background:white;
+}
+
+.job-card .badge{
+    font-size:11px;
+    padding:5px 10px;
+}
+
+/* Salary highlight */
+
+.job-card .text-success{
+    font-weight:600;
+}
+
+/* ===== Verified Company Card ===== */
+
+.company-card{
+    border-radius:16px;
+    text-align:center;
+    padding:18px;
+}
+
+.company-card:hover{
+    background:#f1f5ff;
+    transform:translateY(-4px);
+}
+
+/* ===== Section Titles ===== */
+
+h4{
+    letter-spacing:-0.3px;
+    font-weight:600;
+}
+
+/* ===== Buttons ===== */
+
+.btn-outline-primary{
+    border-radius:10px;
+    font-weight:500;
+}
+
+.btn-outline-primary:hover{
+    background:#4f46e5;
+    border-color:#4f46e5;
+}
+
+/* ===== Stats ===== */
+
+.stats-box{
+    background:rgba(255,255,255,0.15);
+    padding:10px 18px;
+    border-radius:10px;
+    backdrop-filter: blur(10px);
+    font-weight:500;
+}
+
+/* ===== Smooth Animations ===== */
+
+*{
+    transition:all .2s ease;
+}

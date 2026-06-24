@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Companies</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background: #f5f7fb;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height:100vh;
+            padding-top: 120px;
+            position: relative;
+        }
+
+        body::before{
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg,#0d6efd,#6ea8fe);
+            z-index: -1;
+        }
+
+        .companies-section{
+            max-width: 1320px;
+            margin: auto;
+            padding: 25px 24px 40px;
+        }
+
+        .page-top{
+            background: rgba(255,255,255,0.92);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .page-title-box h2{
+            margin: 0;
+            font-weight: 800;
+            color: #1d2b3a;
+        }
+
+        .page-title-box p{
+            margin: 6px 0 0;
+            color: #6c757d;
+        }
+
+        .search-form{
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .search-form input{
+            min-width: 260px;
+            border-radius: 12px;
+            height: 46px;
+        }
+
+        .search-form button{
+            border-radius: 12px;
+            padding: 0 22px;
+            height: 46px;
+            font-weight: 600;
+        }
+
+        .company-card{
+            background: white;
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            transition: 0.3s ease;
+            height: 100%;
+        }
+
+        .company-card:hover{
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        }
+
+        .company-card .card-body{
+            padding: 22px;
+        }
+
+        .company-name{
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1d2b3a;
+        }
+
+        .verified-badge{
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+
+        .company-location{
+            color: #6c757d;
+            margin: 8px 0;
+        }
+
+        .company-link{
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .empty-box{
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+            color: #6c757d;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        @media (max-width: 991px){
+            body{
+                padding-top: 100px;
+            }
+
+            .page-top{
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-form{
+                justify-content: stretch;
+            }
+
+            .search-form input,
+            .search-form button{
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="fragments/navbar :: body"></div>
+
+<div class="companies-section">
+
+    <div class="page-top">
+        <div class="page-title-box">
+            <h2>🏢 Company Directory</h2>
+            <p>Explore trusted and verified companies</p>
+        </div>
+
+        <form class="search-form" th:action="@{/companies}" method="get">
+            <input type="text" name="keyword" class="form-control" placeholder="Search company">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4" th:each="c : ${companies}">
+            <div class="card company-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+                        <div class="company-name" th:text="${c.name}">Company Name</div>
+
+                        <span class="badge bg-success verified-badge" th:if="${c.verified}">
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="company-location" th:text="${c.location}">Location</div>
+
+                    <a class="company-link" th:href="${c.website}" th:text="${c.website}" target="_blank">
+                        Website
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12" th:if="${#lists.isEmpty(companies)}">
+            <div class="empty-box">
+                No companies found.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: body"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

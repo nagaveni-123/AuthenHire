@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Companies</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            min-height:100vh;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4f8dfd, #89b4ff, #d6e6ff);
+            padding:40px 20px;
+        }
+
+        .main-container{
+            max-width:1250px;
+            margin:0 auto;
+        }
+
+        .page-card{
+            background:rgba(255,255,255,0.96);
+            border-radius:24px;
+            padding:35px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(8px);
+        }
+
+        .header-section{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:15px;
+            margin-bottom:25px;
+        }
+
+        .page-title{
+            font-size:34px;
+            font-weight:700;
+            color:#1e293b;
+            margin:0;
+        }
+
+        .status-text{
+            color:#2563eb;
+            font-weight:700;
+        }
+
+        .filter-buttons{
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+            margin-bottom:25px;
+        }
+
+        .filter-btn{
+            text-decoration:none;
+            padding:10px 18px;
+            border-radius:30px;
+            font-weight:600;
+            font-size:15px;
+            transition:0.3s ease;
+            border:1px solid transparent;
+        }
+
+        .filter-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0 8px 18px rgba(0,0,0,0.12);
+        }
+
+        .all-btn{
+            background:#e0ecff;
+            color:#1d4ed8;
+        }
+
+        .pending-btn{
+            background:#fff4db;
+            color:#b45309;
+        }
+
+        .approved-btn{
+            background:#dcfce7;
+            color:#15803d;
+        }
+
+        .rejected-btn{
+            background:#fee2e2;
+            color:#b91c1c;
+        }
+
+        .table-wrapper{
+            overflow-x:auto;
+            border-radius:18px;
+        }
+
+        .custom-table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            overflow:hidden;
+            border-radius:18px;
+        }
+
+        .custom-table thead tr{
+            background:linear-gradient(90deg, #1e3a8a, #2563eb);
+        }
+
+        .custom-table th{
+            color:white;
+            text-align:left;
+            padding:16px 18px;
+            font-size:15px;
+            font-weight:700;
+            white-space:nowrap;
+        }
+
+        .custom-table td{
+            padding:16px 18px;
+            font-size:15px;
+            color:#1f2937;
+            border-bottom:1px solid #e5e7eb;
+            vertical-align:middle;
+        }
+
+        .custom-table tbody tr{
+            transition:0.3s ease;
+        }
+
+        .custom-table tbody tr:hover{
+            background:#f8fbff;
+            transform:scale(1.003);
+        }
+
+        .status-badge{
+            display:inline-block;
+            padding:7px 14px;
+            border-radius:30px;
+            font-size:13px;
+            font-weight:700;
+            color:white;
+            min-width:95px;
+            text-align:center;
+        }
+
+        .ai-pending, .admin-pending{
+            background:#f59e0b;
+        }
+
+        .ai-failed, .admin-rejected{
+            background:#ef4444;
+        }
+
+        .ai-passed, .admin-approved{
+            background:#22c55e;
+        }
+
+        .verified-true{
+            background:#16a34a;
+        }
+
+        .verified-false{
+            background:#64748b;
+        }
+
+        .view-btn{
+            display:inline-block;
+            text-decoration:none;
+            background:linear-gradient(90deg, #4f46e5, #3b82f6);
+            color:white;
+            padding:10px 18px;
+            border-radius:30px;
+            font-size:14px;
+            font-weight:700;
+            transition:0.3s ease;
+            box-shadow:0 8px 16px rgba(59,130,246,0.25);
+        }
+
+        .view-btn:hover{
+            color:white;
+            transform:translateY(-2px);
+            box-shadow:0 12px 20px rgba(59,130,246,0.32);
+        }
+
+        .empty-row td{
+            text-align:center;
+            color:#6b7280;
+            padding:30px;
+            font-weight:500;
+        }
+
+        @media(max-width:768px){
+            .page-card{
+                padding:22px;
+                border-radius:18px;
+            }
+
+            .page-title{
+                font-size:26px;
+            }
+
+            .custom-table th,
+            .custom-table td{
+                padding:12px 14px;
+                font-size:14px;
+            }
+
+            .filter-btn{
+                font-size:14px;
+                padding:9px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="page-card">
+
+        <div class="header-section">
+            <h3 class="page-title">
+                Companies
+                <span style="font-size:24px; font-weight:600; color:#475569;">
+                    (Status: <span class="status-text" th:text="${status}"></span>)
+                </span>
+            </h3>
+        </div>
+
+        <div class="filter-buttons">
+            <a class="filter-btn all-btn" th:href="@{/admin/companies(status='ALL')}">All</a>
+            <a class="filter-btn pending-btn" th:href="@{/admin/companies(status='PENDING')}">Pending</a>
+            <a class="filter-btn approved-btn" th:href="@{/admin/companies(status='APPROVED')}">Approved</a>
+            <a class="filter-btn rejected-btn" th:href="@{/admin/companies(status='REJECTED')}">Rejected</a>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>AI Status</th>
+                        <th>Admin Status</th>
+                        <th>Verified</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(companies)}" class="empty-row">
+                        <td colspan="7">No companies found.</td>
+                    </tr>
+
+                    <tr th:each="c : ${companies}">
+                        <td th:text="${c.id}"></td>
+                        <td th:text="${c.name}"></td>
+                        <td th:text="${c.location}"></td>
+
+                        <td>
+                            <span th:classappend="${c.aiStatus == 'PENDING'} ? ' ai-pending' :
+                                                   (${c.aiStatus == 'FAILED'} ? ' ai-failed' : ' ai-passed')"
+                                  class="status-badge"
+                                  th:text="${c.aiStatus}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:classappend="${c.adminStatus == 'PENDING'} ? ' admin-pending' :
+                                                   (${c.adminStatus == 'REJECTED'} ? ' admin-rejected' : ' admin-approved')"
+                                  class="status-badge"
+                                  th:text="${c.adminStatus}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <span th:classappend="${c.verified} ? ' verified-true' : ' verified-false'"
+                                  class="status-badge"
+                                  th:text="${c.verified ? 'Verified' : 'Not Verified'}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <a class="view-btn"
+                               th:href="@{/admin/companies/{id}(id=${c.id})}">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

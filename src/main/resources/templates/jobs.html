@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Jobs</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #eef4ff, #dbe9ff, #f8fbff);
+            min-height:100vh;
+            color:#2c3e50;
+        }
+
+        /* Hero Header */
+        .jobs-hero{
+            background: linear-gradient(135deg, #0d6efd, #3d8bfd, #6ea8fe);
+            color:white;
+            padding:50px 0 40px;
+            border-bottom-left-radius:30px;
+            border-bottom-right-radius:30px;
+            box-shadow:0 8px 25px rgba(13,110,253,0.20);
+            margin-bottom:30px;
+        }
+
+        .jobs-hero h1{
+            font-size:38px;
+            font-weight:700;
+            margin-bottom:10px;
+        }
+
+        .jobs-hero p{
+            font-size:16px;
+            opacity:0.95;
+            margin-bottom:0;
+        }
+
+        /* Filter Card */
+        .filter-card{
+            border:none;
+            border-radius:24px;
+            box-shadow:0 12px 30px rgba(13,110,253,0.10);
+            overflow:hidden;
+            background:#ffffff;
+            position:sticky;
+            top:20px;
+        }
+
+        .filter-header{
+            background: linear-gradient(90deg, #0d6efd, #4f8dfd);
+            color:white;
+            padding:18px 20px;
+            font-size:18px;
+            font-weight:700;
+        }
+
+        .filter-card .card-body{
+            padding:22px;
+        }
+
+        .form-control,
+        .form-select{
+            border-radius:14px;
+            padding:12px 14px;
+            border:1px solid #d8e3f5;
+            box-shadow:none;
+            transition:0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus{
+            border-color:#0d6efd;
+            box-shadow:0 0 0 0.2rem rgba(13,110,253,0.15);
+        }
+
+        .btn-filter{
+            background: linear-gradient(90deg, #0d6efd, #3d8bfd);
+            border:none;
+            border-radius:14px;
+            padding:11px;
+            font-weight:600;
+            color:white;
+            transition:0.3s ease;
+            box-shadow:0 8px 18px rgba(13,110,253,0.20);
+        }
+
+        .btn-filter:hover{
+            transform:translateY(-2px);
+            color:white;
+            box-shadow:0 12px 22px rgba(13,110,253,0.28);
+        }
+
+        .btn-reset{
+            border-radius:14px;
+            padding:11px;
+            font-weight:600;
+        }
+
+        /* Section title */
+        .jobs-topbar{
+            background:white;
+            padding:18px 24px;
+            border-radius:20px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.06);
+            margin-bottom:20px;
+        }
+
+        .jobs-title{
+            font-size:28px;
+            font-weight:700;
+            color:#1d3557;
+            margin-bottom:0;
+        }
+
+        .results-count{
+            background:#eef4ff;
+            color:#0d6efd;
+            padding:8px 16px;
+            border-radius:50px;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        /* Job Card */
+        .job-card{
+            border:none;
+            border-radius:22px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.08);
+            transition:0.35s ease;
+            overflow:hidden;
+            background:#ffffff;
+            position:relative;
+        }
+
+        .job-card::before{
+            content:"";
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:5px;
+            background: linear-gradient(90deg, #0d6efd, #20c997, #6f42c1);
+        }
+
+        .job-card:hover{
+            transform:translateY(-6px);
+            box-shadow:0 16px 35px rgba(13,110,253,0.15);
+        }
+
+        .job-card .card-body{
+            padding:24px;
+        }
+
+        .job-title{
+            font-size:22px;
+            font-weight:700;
+            color:#1d3557;
+            margin-bottom:8px;
+        }
+
+        .job-company{
+            font-size:15px;
+            color:#6c757d;
+            margin-bottom:12px;
+        }
+
+        .job-badges{
+            display:flex;
+            flex-wrap:wrap;
+            gap:10px;
+            margin-top:10px;
+        }
+
+        .custom-badge{
+            display:inline-block;
+            padding:8px 14px;
+            border-radius:50px;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .badge-type{
+            background:#dff3ff;
+            color:#0c63e7;
+        }
+
+        .badge-location{
+            background:#eaf7e8;
+            color:#198754;
+        }
+
+        .badge-salary{
+            background:#fff3cd;
+            color:#856404;
+        }
+
+        .view-btn{
+            background: linear-gradient(90deg, #0d6efd, #4f8dfd);
+            border:none;
+            color:white;
+            padding:10px 22px;
+            border-radius:14px;
+            font-weight:600;
+            text-decoration:none;
+            display:inline-block;
+            transition:0.3s ease;
+            box-shadow:0 8px 18px rgba(13,110,253,0.20);
+        }
+
+        .view-btn:hover{
+            color:white;
+            transform:translateY(-2px);
+            box-shadow:0 12px 24px rgba(13,110,253,0.28);
+        }
+
+        /* Empty Alert */
+        .empty-alert{
+            border:none;
+            border-radius:20px;
+            padding:22px;
+            background:#ffffff;
+            box-shadow:0 8px 20px rgba(0,0,0,0.06);
+            color:#6c757d;
+            font-weight:500;
+        }
+
+        /* Footer */
+        .custom-footer{
+            margin-top:50px;
+            background: linear-gradient(90deg, #1d3557, #274c77);
+            color:white;
+            padding:30px 0 18px;
+            border-top-left-radius:30px;
+            border-top-right-radius:30px;
+            box-shadow:0 -8px 20px rgba(0,0,0,0.08);
+        }
+
+        .footer-title{
+            font-size:22px;
+            font-weight:700;
+            margin-bottom:8px;
+        }
+
+        .footer-text{
+            font-size:15px;
+            opacity:0.92;
+            margin-bottom:0;
+        }
+
+        .footer-bottom{
+            border-top:1px solid rgba(255,255,255,0.15);
+            margin-top:20px;
+            padding-top:14px;
+            font-size:14px;
+            opacity:0.9;
+        }
+
+        @media(max-width:991px){
+            .filter-card{
+                position:static;
+            }
+        }
+
+        @media(max-width:768px){
+            .jobs-hero h1{
+                font-size:30px;
+            }
+
+            .jobs-title{
+                font-size:24px;
+            }
+
+            .job-title{
+                font-size:20px;
+            }
+
+            .job-card .d-flex{
+                flex-direction:column;
+                gap:18px;
+            }
+
+            .job-card .text-end{
+                text-align:left !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Existing Navbar Fragment -->
+    <div th:replace="fragments/navbar :: body"></div> 
+
+    <!-- Hero Section -->
+    <section class="jobs-hero">
+        <div class="container text-center">
+            <h1>Find Your Dream Job</h1>
+            <p>Explore verified opportunities and build your future with confidence</p>
+        </div>
+    </section>
+
+    <div class="container my-4">
+        <div class="row g-4">
+
+            <!-- Filters -->
+            <div class="col-lg-3">
+                <div class="card filter-card">
+                    <div class="filter-header">
+                        Job Filters
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/jobs}" method="get" class="vstack gap-3">
+                            <input class="form-control" name="q" placeholder="Search by job title" th:value="${q}">
+                            <input class="form-control" name="loc" placeholder="Search by location" th:value="${loc}">
+
+                            <select class="form-select" name="type">
+                                <option value="">All Types</option>
+                                <option value="Full-time" th:selected="${type=='Full-time'}">Full-time</option>
+                                <option value="Part-time" th:selected="${type=='Part-time'}">Part-time</option>
+                                <option value="Internship" th:selected="${type=='Internship'}">Internship</option>
+                            </select>
+
+                            <button class="btn btn-filter" type="submit">Apply Filters</button>
+                            <a class="btn btn-outline-secondary btn-reset" th:href="@{/jobs}">Reset</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Listing -->
+            <div class="col-lg-9">
+
+                <div class="jobs-topbar d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="jobs-title">Available Jobs</h5>
+                    <div class="results-count" th:text="${#lists.size(jobs)} + ' results'">0 results</div>
+                </div>
+
+                <div class="vstack gap-4">
+
+                    <div class="card job-card" th:each="job : ${jobs}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="job-title" th:text="${job.title}">Title</h6>
+
+                                    <div class="job-company">
+                                        <span th:text="${job.company.name}">Company</span>
+                                    </div>
+
+                                    <div class="job-badges">
+                                        <span class="custom-badge badge-location" th:text="${job.location}">Location</span>
+                                        <span class="custom-badge badge-type" th:text="${job.jobType}">Type</span>
+                                        <span class="custom-badge badge-salary" th:text="${job.salaryRange}">Salary</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <a class="view-btn" th:href="@{|/jobs/${job.id}|}">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert empty-alert" th:if="${#lists.isEmpty(jobs)}">
+                        No jobs found. Try different filters to discover more opportunities.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Existing Footer Fragment -->
+    <div th:replace="fragments/footer :: body"></div>
+
+    <!-- Extra Beautiful Footer -->
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

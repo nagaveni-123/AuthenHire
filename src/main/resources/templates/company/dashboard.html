@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Company Dashboard</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: #f4f6f9;
+    }
+
+    .navbar {
+        background: #1e3c72;
+        padding: 15px 30px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar h2 {
+        margin: 0;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+        text-decoration: underline;
+    }
+
+    .container {
+        padding: 30px;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .card h3 {
+        margin-top: 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        color: #333;
+    }
+
+    .info p {
+        margin: 10px 0;
+        font-size: 15px;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .verified-true {
+        background: #28a745;
+    }
+
+    .verified-false {
+        background: #dc3545;
+    }
+
+    .status-pending {
+        background: #ffc107;
+        color: black;
+    }
+
+    .status-approved {
+        background: #28a745;
+    }
+
+    .status-rejected {
+        background: #dc3545;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 20px 0;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="navbar">
+    <h2>Company Dashboard</h2>
+    <div class="nav-links">
+        <a th:href="@{/company/profile}">Edit Profile</a>
+        <a th:href="@{/company/verification}">Verification</a>
+        <a th:href="@{/company/jobs}">Jobs</a>
+        <a th:href="@{/company/applications}">Applications</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Company Info Card -->
+    <div class="card">
+        <h3>Company Details</h3>
+        <div class="info">
+            <p><b>Name:</b> <span th:text="${company.name}"></span></p>
+
+            <p><b>Verified:</b> 
+                <span th:text="${company.verified}"
+                      th:classappend="${company.verified} ? 'badge verified-true' : 'badge verified-false'">
+                </span>
+            </p>
+
+            <p><b>Admin Status:</b> 
+                <span th:text="${company.adminStatus}" class="badge status-approved"></span>
+            </p>
+
+            <p><b>AI Status:</b> 
+                <span th:text="${company.aiStatus}" class="badge status-pending"></span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Verification Card -->
+    <div class="card" th:if="${verification != null}">
+        <h3>Latest Verification</h3>
+        <div class="info">
+            <p><b>GST:</b> <span th:text="${verification.gstNumber}"></span></p>
+            <p><b>Admin:</b> <span th:text="${verification.adminStatus}" class="badge status-approved"></span></p>
+            <p><b>AI:</b> <span th:text="${verification.aiStatus}" class="badge status-pending"></span></p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,5 +1,9 @@
 package com.authenhire.authenhire.config;
 
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,13 +22,34 @@ public class DataSourceConfig {
         HikariDataSource dataSource = new HikariDataSource();
 
         String url = environment.getProperty("spring.datasource.url");
-        if (url != null && url.startsWith("postgresql://")) {
+        String username = environment.getProperty("spring.datasource.username");
+        String password = environment.getProperty("spring.datasource.password");
+
+        if (url != null && (url.startsWith("postgresql://") || url.startsWith("postgres://"))) {
             url = "jdbc:" + url;
         }
 
+        if (url != null && url.startsWith("jdbc:postgresql://")) {
+            try {
+                URI uri = new URI(url.replaceFirst("^jdbc:", ""));
+                String userInfo = uri.getUserInfo();
+                if ((username == null || username.isBlank() || "sa".equals(username)) && userInfo != null) {
+                    String[] userInfoParts = userInfo.split(":", 2);
+                    username = URLDecoder.decode(userInfoParts[0], StandardCharsets.UTF_8);
+                    password = userInfoParts.length > 1 ? URLDecoder.decode(userInfoParts[1], StandardCharsets.UTF_8) : "";
+                }
+            } catch (Exception ignored) {
+                // Fall back to the values already supplied by the environment.
+            }
+        }
+
         dataSource.setJdbcUrl(url);
-        dataSource.setUsername(environment.getProperty("spring.datasource.username"));
-        dataSource.setPassword(environment.getProperty("spring.datasource.password"));
+        if (username != null && !username.isBlank()) {
+            dataSource.setUsername(username);
+        }
+        if (password != null) {
+            dataSource.setPassword(password);
+        }
 
         String driverClassName = environment.getProperty("spring.datasource.driver-class-name");
         if (driverClassName != null && !driverClassName.isBlank()) {

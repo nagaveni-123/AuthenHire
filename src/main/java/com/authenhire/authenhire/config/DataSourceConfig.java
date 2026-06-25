@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -17,6 +18,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class DataSourceConfig {
 
     @Bean
+    @Primary
     @Qualifier("dataSource")
     public DataSource dataSource(Environment environment) {
         HikariDataSource dataSource = new HikariDataSource();
@@ -26,20 +28,70 @@ public class DataSourceConfig {
         String password = environment.getProperty("spring.datasource.password");
 
         if (url != null && (url.startsWith("postgresql://") || url.startsWith("postgres://"))) {
-            url = "jdbc:" + url;
-        }
-
-        if (url != null && url.startsWith("jdbc:postgresql://")) {
             try {
-                URI uri = new URI(url.replaceFirst("^jdbc:", ""));
+                URI uri = URI.create(url);
                 String userInfo = uri.getUserInfo();
                 if ((username == null || username.isBlank() || "sa".equals(username)) && userInfo != null) {
-                    String[] userInfoParts = userInfo.split(":", 2);
-                    username = URLDecoder.decode(userInfoParts[0], StandardCharsets.UTF_8);
-                    password = userInfoParts.length > 1 ? URLDecoder.decode(userInfoParts[1], StandardCharsets.UTF_8) : "";
+                    String[] parts = userInfo.split(":", 2);
+                    username = URLDecoder.decode(parts[0], StandardCharsets.UTF_8);
+                    password = parts.length > 1 ? URLDecoder.decode(parts[1], StandardCharsets.UTF_8) : "";
                 }
+
+                String host = uri.getHost();
+                int port = uri.getPort();
+                String path = uri.getPath();
+                String query = uri.getQuery();
+
+                StringBuilder jdbcUrl = new StringBuilder("jdbc:postgresql://");
+                if (host != null && !host.isBlank()) {
+                    jdbcUrl.append(host);
+                }
+                if (port > 0) {
+                    jdbcUrl.append(':').append(port);
+                }
+                if (path != null && !path.isBlank()) {
+                    jdbcUrl.append(path);
+                }
+                if (query != null && !query.isBlank()) {
+                    jdbcUrl.append('?').append(query);
+                }
+                url = jdbcUrl.toString();
             } catch (Exception ignored) {
-                // Fall back to the values already supplied by the environment.
+                if (url != null && url.startsWith("postgresql://")) {
+                    url = "jdbc:" + url;
+                }
+            }
+        } else if (url != null && url.startsWith("jdbc:postgresql://")) {
+            try {
+                URI uri = URI.create(url.replaceFirst("^jdbc:", ""));
+                String userInfo = uri.getUserInfo();
+                if ((username == null || username.isBlank() || "sa".equals(username)) && userInfo != null) {
+                    String[] parts = userInfo.split(":", 2);
+                    username = URLDecoder.decode(parts[0], StandardCharsets.UTF_8);
+                    password = parts.length > 1 ? URLDecoder.decode(parts[1], StandardCharsets.UTF_8) : "";
+                }
+
+                String host = uri.getHost();
+                int port = uri.getPort();
+                String path = uri.getPath();
+                String query = uri.getQuery();
+
+                StringBuilder jdbcUrl = new StringBuilder("jdbc:postgresql://");
+                if (host != null && !host.isBlank()) {
+                    jdbcUrl.append(host);
+                }
+                if (port > 0) {
+                    jdbcUrl.append(':').append(port);
+                }
+                if (path != null && !path.isBlank()) {
+                    jdbcUrl.append(path);
+                }
+                if (query != null && !query.isBlank()) {
+                    jdbcUrl.append('?').append(query);
+                }
+                url = jdbcUrl.toString();
+            } catch (Exception ignored) {
+                // Fall back to the original value.
             }
         }
 
